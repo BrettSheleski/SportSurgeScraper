@@ -1,0 +1,19 @@
+{
+  "name": "sportsurgescraper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/jsdom": "^20.0.0",
+    "@types/phantom": "^3.2.6",
+    "jsdom": "^20.0.0",
+    "phantom": "^6.3.0",
+    "phantomjs": "^2.1.7",
+    "webpage": "^0.3.0"
+  }
+}
