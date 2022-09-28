@@ -9,8 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/axios": "^0.14.0",
     "@types/jsdom": "^20.0.0",
     "@types/phantom": "^3.2.6",
+    "axios": "^0.27.2",
+    "console-menu": "^0.1.0",
     "jsdom": "^20.0.0",
     "phantom": "^6.3.0",
     "phantomjs": "^2.1.7",

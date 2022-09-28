@@ -32,98 +32,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const phantom = __importStar(require("phantom"));
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
-const SPORTSURGE_URL = "https://sportsurge.club/";
-function parseGame(tag) {
-    let title = tag.title;
-    let url = tag.href;
-    return {
-        category: getCategories(tag),
-        teams: getTeams(tag),
-        time: getTime(tag),
-        title: title,
-        url: url
-    };
-}
-function getParentATag(element) {
-    let parent = element.parentElement;
-    if (!parent) {
-        return null;
-    }
-    else if (parent.tagName == "A") {
-        return parent;
-    }
-    else {
-        return getParentATag(parent);
-    }
-}
-function getFeed(url = SPORTSURGE_URL) {
+const SportSurgeScraper_1 = require("./SportSurgeScraper");
+const readline = __importStar(require("readline"));
+var menu = require('console-menu');
+(function () {
     return __awaiter(this, void 0, void 0, function* () {
-        const instance = yield phantom.create();
-        const page = yield instance.createPage();
-        const loadedPage = yield page.on("onLoadFinished", function (e) {
+        let games = yield SportSurgeScraper_1.SportSurgeScraper.getFeed();
+        process.stdout.write("Current Games:\n");
+        for (let i = 0; i < games.length; ++i) {
+            process.stdout.write(`${i + 1}: ${games[i].teams[0].name} vs. ${games[i].teams[1].name}\n`);
+        }
+        let rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+        rl.question(`Select a game [1-${games.length}]: `, function (answer) {
             return __awaiter(this, void 0, void 0, function* () {
-                console.log(e);
+                rl.close();
+                let i = parseInt(answer);
+                --i;
+                process.stdout.write(`Selected game: ${games[i].teams[0].name} vs ${games[i].teams[1].name}`);
+                let game = new SportSurgeScraper_1.SportSurgeScraper.Game(games[i]);
+                let feeds = yield game.getFeeds();
+                console.log(feeds);
             });
         });
-        const status = yield page.open(url);
-        const html = yield page.property("content");
-        yield instance.exit();
-        let games = Array();
-        let dom = new JSDOM(html);
-        let doc = dom.window.document;
-        var teamRows = doc.getElementsByClassName("team-name-event-row");
-        let aTags = Array();
-        let aTag;
-        for (let i = 0; i < teamRows.length; ++i) {
-            aTag = getParentATag(teamRows[i]);
-            if (aTag && aTags.indexOf(aTag) == -1) {
-                aTags.push(aTag);
-                games.push(parseGame(aTag));
-            }
-        }
-        console.log(games);
-        //console.log(JSON.stringify(games));
     });
-}
-getFeed();
-function getCategories(tag) {
-    let categoryDiv = tag.getElementsByClassName("col-2")[0];
-    if (categoryDiv.innerText) {
-        return categoryDiv.innerHTML.split(",").map(x => x.trim());
-    }
-    else {
-        return [];
-    }
-}
-function getTeams(tag) {
-    let teams = Array();
-    let divs = tag.getElementsByClassName("team-name-event-row");
-    for (let i = 0; i < divs.length; ++i) {
-        teams.push(getTeam(divs[i]));
-    }
-    return teams;
-}
-function getTeam(teamEventRow) {
-    let name;
-    let logoUrl = null;
-    let imgs = teamEventRow.getElementsByTagName("img");
-    let img = null;
-    name = teamEventRow.getElementsByTagName("span")[0].innerText;
-    if (imgs.length > 0) {
-        img = imgs[0];
-        logoUrl = img.src;
-    }
-    return {
-        name: name,
-        logoUrl: logoUrl
-    };
-}
-function getTime(tag) {
-    let div = tag.getElementsByClassName("col-4")[0];
-    if (div.innerHTML) {
-        return new Date(div.innerHTML);
-    }
-}
+})();
