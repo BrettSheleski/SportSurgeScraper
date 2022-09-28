@@ -151,18 +151,44 @@ export module SportSurgeScraper {
         return games;
     }
 
+    type GameFeedRecord = {
+        game: Game,
+        link: string,
+        name?: string,
+        reputation?: string,
+        quality?: string,
+        language?: string,
+        ads?: string,
+        channel?: string
+    };
+
     class GameFeed {
 
         game: Game;
         link: string;
+        name?: string;
+        reputation?: string;
+        quality?: string;
+        language?: string;
+        ads?: string;
+        channel?: string;
 
-        constructor(game: Game, link: string) {
-            this.game = game;
-            this.link = link;
+
+        constructor(record: GameFeedRecord) {
+
+            this.game = record.game;
+            this.link = record.link;
+
+            this.name = record.name;
+            this.reputation = record.reputation;
+            this.quality = record.quality;
+            this.language = record.language;
+            this.ads = record.ads;
+            this.channel = record.channel;
         }
 
         async getStreamUrl(): Promise<string | null> {
-            let url : string | null = null;
+            let url: string | null = null;
 
             return url;
         }
@@ -201,15 +227,41 @@ export module SportSurgeScraper {
             let rows = doc.getElementsByTagName("tr");
             let row: HTMLTableRowElement;
             let link: string | null;
+
+            let name: string | null | undefined;
+            let reputation: string | undefined;
+            let quality: string | undefined;
+            let language: string | undefined;
+            let ads: string | undefined;
+            let channel: string | undefined;
+
             for (let i = 0; i < rows.length; ++i) {
                 row = <HTMLTableRowElement>rows[i];
 
                 link = row.getAttribute("data-stream-link");
 
                 if (link) {
-                    feeds.push(new GameFeed(this, link));
-                }
 
+
+                    name = row.querySelector("td:nth-child(3) > span > span")?.textContent?.trim();
+                    reputation = row.querySelector("td:nth-child(4) > span")?.textContent?.trim();
+                    quality = row.querySelector("td:nth-child(5) > span ")?.textContent?.trim();
+                    language = row.querySelector("td:nth-child(6) > span ")?.textContent?.trim();
+                    ads = row.querySelector("td:nth-child(7) > span ")?.textContent?.trim();
+                    channel = row.querySelector("td:nth-child(8) > span ")?.textContent?.trim();
+
+
+                    feeds.push(new GameFeed({
+                        ads: ads,
+                        channel: channel,
+                        game: this,
+                        language: language,
+                        link: link,
+                        name: name,
+                        quality: quality,
+                        reputation: reputation
+                    }));
+                }
             }
 
             return feeds;

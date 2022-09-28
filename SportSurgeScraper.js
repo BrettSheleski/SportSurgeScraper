@@ -134,9 +134,15 @@ var SportSurgeScraper;
     }
     SportSurgeScraper.getFeed = getFeed;
     class GameFeed {
-        constructor(game, link) {
-            this.game = game;
-            this.link = link;
+        constructor(record) {
+            this.game = record.game;
+            this.link = record.link;
+            this.name = record.name;
+            this.reputation = record.reputation;
+            this.quality = record.quality;
+            this.language = record.language;
+            this.ads = record.ads;
+            this.channel = record.channel;
         }
         getStreamUrl() {
             return __awaiter(this, void 0, void 0, function* () {
@@ -150,6 +156,7 @@ var SportSurgeScraper;
             this.record = record;
         }
         getFeeds() {
+            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
             return __awaiter(this, void 0, void 0, function* () {
                 var feeds = Array();
                 let urlNoQuery = this.record.url.split('?')[0];
@@ -163,11 +170,32 @@ var SportSurgeScraper;
                 let rows = doc.getElementsByTagName("tr");
                 let row;
                 let link;
+                let name;
+                let reputation;
+                let quality;
+                let language;
+                let ads;
+                let channel;
                 for (let i = 0; i < rows.length; ++i) {
                     row = rows[i];
                     link = row.getAttribute("data-stream-link");
                     if (link) {
-                        feeds.push(new GameFeed(this, link));
+                        name = (_b = (_a = row.querySelector("td:nth-child(3) > span > span")) === null || _a === void 0 ? void 0 : _a.textContent) === null || _b === void 0 ? void 0 : _b.trim();
+                        reputation = (_d = (_c = row.querySelector("td:nth-child(4) > span")) === null || _c === void 0 ? void 0 : _c.textContent) === null || _d === void 0 ? void 0 : _d.trim();
+                        quality = (_f = (_e = row.querySelector("td:nth-child(5) > span ")) === null || _e === void 0 ? void 0 : _e.textContent) === null || _f === void 0 ? void 0 : _f.trim();
+                        language = (_h = (_g = row.querySelector("td:nth-child(6) > span ")) === null || _g === void 0 ? void 0 : _g.textContent) === null || _h === void 0 ? void 0 : _h.trim();
+                        ads = (_k = (_j = row.querySelector("td:nth-child(7) > span ")) === null || _j === void 0 ? void 0 : _j.textContent) === null || _k === void 0 ? void 0 : _k.trim();
+                        channel = (_m = (_l = row.querySelector("td:nth-child(8) > span ")) === null || _l === void 0 ? void 0 : _l.textContent) === null || _m === void 0 ? void 0 : _m.trim();
+                        feeds.push(new GameFeed({
+                            ads: ads,
+                            channel: channel,
+                            game: this,
+                            language: language,
+                            link: link,
+                            name: name,
+                            quality: quality,
+                            reputation: reputation
+                        }));
                     }
                 }
                 return feeds;
