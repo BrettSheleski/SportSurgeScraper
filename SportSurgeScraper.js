@@ -144,9 +144,41 @@ var SportSurgeScraper;
             this.ads = record.ads;
             this.channel = record.channel;
         }
+        getStreamUrlStage2(url) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const instance = yield phantom.create();
+                let page = yield instance.createPage();
+                yield page.property("viewportSize", { width: 1280, height: 1024 });
+                const loadedPage = yield page.on("onLoadFinished", function (e) {
+                    return __awaiter(this, void 0, void 0, function* () {
+                    });
+                });
+                const status = yield page.open(this.link);
+                const html = yield page.property("content");
+                yield instance.exit();
+                console.log(html);
+                return url;
+            });
+        }
         getStreamUrl() {
             return __awaiter(this, void 0, void 0, function* () {
                 let url = null;
+                const instance = yield phantom.create();
+                let page = yield instance.createPage();
+                yield page.property("viewportSize", { width: 1280, height: 1024 });
+                const loadedPage = yield page.on("onLoadFinished", function (e) {
+                    return __awaiter(this, void 0, void 0, function* () {
+                    });
+                });
+                const status = yield page.open(this.link);
+                const html = yield page.property("content");
+                yield instance.exit();
+                let dom = new JSDOM(html);
+                let doc = dom.window.document;
+                let atag = doc.querySelector("header li a");
+                if (atag) {
+                    return yield this.getStreamUrlStage2(atag.href);
+                }
                 return url;
             });
         }

@@ -187,8 +187,54 @@ export module SportSurgeScraper {
             this.channel = record.channel;
         }
 
+        private async getStreamUrlStage2(url: string): Promise<string | null> {
+            const instance: phantom.PhantomJS = await phantom.create();
+            let page: phantom.WebPage = await instance.createPage();
+
+            await page.property("viewportSize", { width: 1280, height: 1024 });
+
+            const loadedPage = await page.on("onLoadFinished", async function (e: "success" | "fail") {
+
+            });
+
+            const status: string = await page.open(this.link);
+
+            const html = await page.property("content");
+
+            await instance.exit();
+
+            console.log(html);
+
+            return url;
+        }
+
         async getStreamUrl(): Promise<string | null> {
             let url: string | null = null;
+
+            const instance: phantom.PhantomJS = await phantom.create();
+            let page: phantom.WebPage = await instance.createPage();
+
+            await page.property("viewportSize", { width: 1280, height: 1024 });
+
+            const loadedPage = await page.on("onLoadFinished", async function (e: "success" | "fail") {
+
+            });
+
+            const status: string = await page.open(this.link);
+
+            const html = await page.property("content");
+
+            await instance.exit();
+
+            let dom = new JSDOM(html);
+
+            let doc: Document = dom.window.document;
+
+            let atag = <HTMLAnchorElement | null>doc.querySelector("header li a");
+
+            if (atag) {
+                return await this.getStreamUrlStage2(atag.href);
+            }
 
             return url;
         }

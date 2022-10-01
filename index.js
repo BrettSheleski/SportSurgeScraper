@@ -68,6 +68,7 @@ var menu = require('console-menu');
                             rl.write(`Selected: ${feed.link}\n`);
                             rl.write("Trying to find the URL of the Stream... ");
                             let url = yield feed.getStreamUrl();
+                            rl.write(`Try this:  ${url}\n`);
                             rl.close();
                         });
                     });

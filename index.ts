@@ -60,6 +60,8 @@ var menu = require('console-menu');
                 let url = await feed.getStreamUrl();
 
 
+                rl.write(`Try this:  ${url}\n`);
+
 
                 rl.close();
             });
