@@ -32,3 +32,5 @@ services:
       - 9886:80
     restart: unless-stopped
 ```
+
+The Docker image will also create a `/stream` endpoint which redirects to the specified .m3u8 stream file.  This way if/when configuration changes to handle a new stream one could always use the constant `/stream` endpoint without needing to reconfigure clients.
