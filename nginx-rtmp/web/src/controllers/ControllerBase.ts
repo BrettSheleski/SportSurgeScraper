@@ -15,10 +15,10 @@ abstract class ControllerBase {
 
     }
 
-    protected onGet?: (request: express.Request, response: express.Response) => Promise<void> | void;
-    protected onPost?: (request: express.Request, response: express.Response) => Promise<void> | void;
-    protected onDelete?: (request: express.Request, response: express.Response) => Promise<void> | void;
-    protected onPut?: (request: express.Request, response: express.Response) => Promise<void> | void;
+    protected get?: (request: express.Request, response: express.Response) => Promise<void> | void;
+    protected post?: (request: express.Request, response: express.Response) => Promise<void> | void;
+    protected delete?: (request: express.Request, response: express.Response) => Promise<void> | void;
+    protected put?: (request: express.Request, response: express.Response) => Promise<void> | void;
 
 
     public initialize(app: App, path: string) {
@@ -33,20 +33,20 @@ abstract class ControllerBase {
 
 
     protected onInitializeRoutes(router: express.Router, path: string) {
-        if (this.onGet) {
-            router.get(path, this.onGet);
+        if (this.get) {
+            router.get(path, this.get);
         }
 
-        if (this.onPost) {
-            router.post(path, this.onPost);
+        if (this.post) {
+            router.post(path, this.post);
         }
 
-        if (this.onDelete) {
-            router.delete(path, this.onDelete);
+        if (this.delete) {
+            router.delete(path, this.delete);
         }
 
-        if (this.onPut) {
-            router.put(path, this.onPut);
+        if (this.put) {
+            router.put(path, this.put);
         }
 
     }
