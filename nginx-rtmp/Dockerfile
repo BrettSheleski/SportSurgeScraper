@@ -15,5 +15,5 @@ RUN npm install
 
 COPY startup.sh /startup.sh
 
-EXPOSE 80 1935
+EXPOSE 5000 1935
 CMD ["/startup.sh"]
